@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
 
 class Dashboard extends StatefulWidget {
-  final token;
+  final String token;
   const Dashboard({super.key, required this.token});
 
   @override
@@ -10,13 +10,12 @@ class Dashboard extends StatefulWidget {
 }
 
 class _DashboardState extends State<Dashboard> {
-  late String email;
+  String email = '';
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     Map<String, dynamic> jwtDecoderToken = JwtDecoder.decode(widget.token);
-    email = jwtDecoderToken['email'];
+    email = (jwtDecoderToken['email'] as String?) ?? '';
   }
 
   @override

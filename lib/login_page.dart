@@ -35,19 +35,6 @@ class _LoginPageState extends State<LoginPage> {
   final Color _borderColor = const Color(0xFFE2E8F0);
   final Color _bgLight = const Color(0xFFF8FAFC);
 
-  late SharedPreferences prefs;
-
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    initSharedPref();
-  }
-
-  void initSharedPref() async {
-    prefs = await SharedPreferences.getInstance();
-  }
-
   void loginUser(String email, String password) async {
     var reqBody = {"email": email, "password": password};
 
@@ -59,10 +46,17 @@ class _LoginPageState extends State<LoginPage> {
 
     var jsonResponse = jsonDecode(response.body);
 
-    if (jsonResponse['status']) {
-      var myToken = jsonResponse['token'];
-      prefs.setString('token', myToken);
+    if (jsonResponse['status'] == true) {
+      final String? myToken = jsonResponse['token'] as String?;
+      if (myToken == null) {
+        print('Login response missing token');
+        return;
+      }
 
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString('token', myToken);
+
+      if (!mounted) return;
       Navigator.push(
         context,
         MaterialPageRoute(builder: (context) => Dashboard(token: myToken)),
