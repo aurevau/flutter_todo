@@ -57,7 +57,7 @@ class _LoginPageState extends State<LoginPage> {
       await prefs.setString('token', myToken);
 
       if (!mounted) return;
-      Navigator.push(
+      Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => Dashboard(token: myToken)),
       );
