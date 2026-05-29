@@ -1,9 +1,13 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:todo_application/widgets/custom_background.dart';
 import 'package:todo_application/widgets/custom_button.dart';
 import 'package:todo_application/widgets/custom_text_field.dart';
 import 'package:todo_application/widgets/custom_text_field_label.dart';
+import 'package:http/http.dart' as http;
+import 'config.dart';
 
 class Dashboard extends StatefulWidget {
   final String token;
@@ -15,7 +19,7 @@ class Dashboard extends StatefulWidget {
 }
 
 class _DashboardState extends State<Dashboard> {
-  String email = '';
+  String userId = '';
   TextEditingController _todoTitle = TextEditingController();
   TextEditingController _todoDescription = TextEditingController();
 
@@ -29,7 +33,35 @@ class _DashboardState extends State<Dashboard> {
   void initState() {
     super.initState();
     Map<String, dynamic> jwtDecoderToken = JwtDecoder.decode(widget.token);
-    email = (jwtDecoderToken['email'] as String?) ?? '';
+    userId = (jwtDecoderToken['_id'] as String?) ?? '';
+  }
+
+  void addTodo() async {
+    if (_todoTitle.text.isNotEmpty && _todoDescription.text.isNotEmpty) {
+      var reqBody = {
+        "userId": userId,
+        "title": _todoTitle.text,
+        "description": _todoDescription.text,
+      };
+
+      var response = await http.post(
+        Uri.parse(addtodo),
+        headers: {"Content-Type": "application/json"},
+        body: jsonEncode(reqBody),
+      );
+
+      var jsonResponse = jsonDecode(response.body);
+
+      print(jsonResponse['status']);
+
+      if (jsonResponse['status']) {
+        _todoTitle.clear();
+        _todoDescription.clear();
+        Navigator.pop(context);
+      } else {
+        print('not created');
+      }
+    }
   }
 
   @override
@@ -38,10 +70,12 @@ class _DashboardState extends State<Dashboard> {
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: [Text(email)],
+          children: [Text(userId)],
         ),
       ),
       floatingActionButton: FloatingActionButton(
+        backgroundColor: _darkTextColor,
+        foregroundColor: _bgLight,
         onPressed: () => _displayTextInputDialog(context),
         child: Icon(Icons.add),
         tooltip: "Add todo",
@@ -79,7 +113,7 @@ class _DashboardState extends State<Dashboard> {
                           bodyColor: _darkTextColor,
                           fontSize: 16,
                         ),
-                        SizedBox(height: 20),
+                        SizedBox(height: 6),
                         CustomTextField(
                           bodyColor: _bodyTextColor,
                           borderColor: _borderColor,
@@ -100,15 +134,16 @@ class _DashboardState extends State<Dashboard> {
                           primaryColor: _primaryColor,
                         ),
 
-                        SizedBox(height: 20),
+                        SizedBox(height: 12),
 
                         CustomButton(
                           btnColor: _darkTextColor,
                           buttonText: "Save",
                           onPressedButton: () {
-                            // addTodo();
+                            addTodo();
                           },
                         ),
+                        SizedBox(height: 12),
                       ],
                     ),
                   ),
