@@ -42,6 +42,8 @@ class _DashboardState extends State<Dashboard> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
+        backgroundColor: _darkTextColor,
+        foregroundColor: _bgLight,
         onPressed: () => _displayTextInputDialog(context),
         child: Icon(Icons.add),
         tooltip: "Add todo",
@@ -79,7 +81,7 @@ class _DashboardState extends State<Dashboard> {
                           bodyColor: _darkTextColor,
                           fontSize: 16,
                         ),
-                        SizedBox(height: 20),
+                        SizedBox(height: 6),
                         CustomTextField(
                           bodyColor: _bodyTextColor,
                           borderColor: _borderColor,
@@ -100,7 +102,7 @@ class _DashboardState extends State<Dashboard> {
                           primaryColor: _primaryColor,
                         ),
 
-                        SizedBox(height: 20),
+                        SizedBox(height: 12),
 
                         CustomButton(
                           btnColor: _darkTextColor,
@@ -109,6 +111,7 @@ class _DashboardState extends State<Dashboard> {
                             // addTodo();
                           },
                         ),
+                        SizedBox(height: 12),
                       ],
                     ),
                   ),
