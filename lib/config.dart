@@ -1,4 +1,4 @@
 final url = 'http://localhost:3000/';
 final registration = "${url}registration";
 final login_url = "${url}login";
-final addTodo = "${url}storeTodo";
+final addtodo = "${url}storeTodo";
