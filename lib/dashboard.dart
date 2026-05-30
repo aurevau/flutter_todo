@@ -37,11 +37,8 @@ class _DashboardState extends State<Dashboard> {
     super.initState();
     Map<String, dynamic> jwtDecoderToken = JwtDecoder.decode(widget.token);
     userId = (jwtDecoderToken['_id'] as String?) ?? '';
-    items = [
-      {"_id": "1", "title": "Handla mat", "description": "Mjölk, ägg, bröd"},
-      {"_id": "2", "title": "Träna", "description": "Gym kl 17"},
-      {"_id": "3", "title": "Läsa", "description": "Kapitel 5"},
-    ];
+
+    getTodoList(userId);
   }
 
   void addTodo() async {
@@ -66,10 +63,27 @@ class _DashboardState extends State<Dashboard> {
         _todoTitle.clear();
         _todoDescription.clear();
         Navigator.pop(context);
+        getTodoList(userId);
       } else {
         print('not created');
       }
     }
+  }
+
+  void getTodoList(userId) async {
+    // var reqBody = {"userId": userId};
+
+    var response = await http.get(
+      Uri.parse('$getusertodolist?userId=$userId'),
+      headers: {"Content-Type": "application/json"},
+    );
+    print(response.body);
+
+    var jsonResponse = jsonDecode(response.body);
+
+    items = jsonResponse['success'];
+
+    setState(() {});
   }
 
   @override
@@ -126,8 +140,8 @@ class _DashboardState extends State<Dashboard> {
                                 ),
                                 children: [
                                   SlidableAction(
-                                    backgroundColor: _bgLight,
-                                    foregroundColor: _darkTextColor,
+                                    backgroundColor: Colors.red,
+                                    foregroundColor: _bgLight,
                                     icon: Icons.delete,
                                     label: 'Delete',
                                     onPressed: (BuildContext context) {
@@ -137,6 +151,7 @@ class _DashboardState extends State<Dashboard> {
                                 ],
                               ),
                               child: Card(
+                                margin: EdgeInsets.all(2),
                                 borderOnForeground: false,
                                 color: _bgLight,
                                 child: ListTile(
@@ -144,6 +159,7 @@ class _DashboardState extends State<Dashboard> {
                                   title: Text('${items![index]['title']}'),
                                   subtitle: Text(
                                     '${items![index]['description']}',
+                                    maxLines: 3,
                                   ),
                                   trailing: Icon(Icons.arrow_back),
                                 ),
@@ -173,8 +189,8 @@ class _DashboardState extends State<Dashboard> {
       builder: (context) {
         return Dialog(
           child: SizedBox(
-            width: 280,
-            height: 300,
+            width: 300,
+            height: 360,
             child: Stack(
               children: [
                 CustomBackground(
@@ -206,6 +222,7 @@ class _DashboardState extends State<Dashboard> {
                           icon: Icons.title,
                           hint: "Title",
                           primaryColor: _primaryColor,
+                          maxLines: 1,
                         ),
                         SizedBox(height: 12),
                         CustomTextField(
@@ -216,6 +233,7 @@ class _DashboardState extends State<Dashboard> {
                           icon: Icons.description,
                           hint: "Description",
                           primaryColor: _primaryColor,
+                          maxLines: 3,
                         ),
 
                         SizedBox(height: 12),
