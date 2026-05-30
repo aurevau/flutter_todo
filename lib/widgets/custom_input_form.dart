@@ -52,6 +52,7 @@ class CustomInputForm extends StatelessWidget {
           primaryColor: primaryColor,
           controller: primaryController,
           errorText: primaryError,
+          maxLines: 1,
         ),
         const SizedBox(height: 24),
         CustomTextFieldLabel(
@@ -80,6 +81,7 @@ class CustomInputForm extends StatelessWidget {
           ),
           controller: secondaryController,
           errorText: secondaryError,
+          maxLines: 1,
         ),
       ],
     );
