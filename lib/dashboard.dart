@@ -8,6 +8,7 @@ import 'package:todo_application/widgets/custom_text_field.dart';
 import 'package:todo_application/widgets/custom_text_field_label.dart';
 import 'package:http/http.dart' as http;
 import 'config.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 
 class Dashboard extends StatefulWidget {
   final String token;
@@ -23,6 +24,8 @@ class _DashboardState extends State<Dashboard> {
   TextEditingController _todoTitle = TextEditingController();
   TextEditingController _todoDescription = TextEditingController();
 
+  List? items;
+
   final Color _primaryColor = const Color(0xFF4F46E5);
   final Color _darkTextColor = const Color(0xFF0F172A);
   final Color _bodyTextColor = const Color(0xFF475569);
@@ -34,6 +37,11 @@ class _DashboardState extends State<Dashboard> {
     super.initState();
     Map<String, dynamic> jwtDecoderToken = JwtDecoder.decode(widget.token);
     userId = (jwtDecoderToken['_id'] as String?) ?? '';
+    items = [
+      {"_id": "1", "title": "Handla mat", "description": "Mjölk, ägg, bröd"},
+      {"_id": "2", "title": "Träna", "description": "Gym kl 17"},
+      {"_id": "3", "title": "Läsa", "description": "Kapitel 5"},
+    ];
   }
 
   void addTodo() async {
@@ -67,10 +75,86 @@ class _DashboardState extends State<Dashboard> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
+      backgroundColor: _bgLight,
+      body: Container(
+        padding: EdgeInsets.only(top: 60, left: 30, right: 30, bottom: 30),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [Text(userId)],
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Text(
+              "Hej! 👋",
+              style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
+            ),
+            Text(
+              "${userId} // Username later",
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.w600,
+                color: Colors.grey[600],
+              ),
+            ),
+            SizedBox(height: 8.0),
+            Text(
+              (items ?? []).isNotEmpty
+                  ? "${items!.length} Tasks"
+                  : "No tasks entered",
+              style: TextStyle(fontSize: 16),
+            ),
+            Expanded(
+              child: Container(
+                decoration: BoxDecoration(
+                  color: _bgLight,
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(20),
+                    topRight: Radius.circular(20),
+                  ),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(0),
+                  child: items == null
+                      ? null
+                      : ListView.builder(
+                          itemCount: items!.length,
+                          itemBuilder: (context, int index) {
+                            return Slidable(
+                              key: const ValueKey(0),
+                              endActionPane: ActionPane(
+                                motion: const ScrollMotion(),
+                                dismissible: DismissiblePane(
+                                  onDismissed: () {},
+                                ),
+                                children: [
+                                  SlidableAction(
+                                    backgroundColor: _bgLight,
+                                    foregroundColor: _darkTextColor,
+                                    icon: Icons.delete,
+                                    label: 'Delete',
+                                    onPressed: (BuildContext context) {
+                                      print('${items![index]['_id']}');
+                                    },
+                                  ),
+                                ],
+                              ),
+                              child: Card(
+                                borderOnForeground: false,
+                                color: _bgLight,
+                                child: ListTile(
+                                  leading: Icon(Icons.task),
+                                  title: Text('${items![index]['title']}'),
+                                  subtitle: Text(
+                                    '${items![index]['description']}',
+                                  ),
+                                  trailing: Icon(Icons.arrow_back),
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                ),
+              ),
+            ),
+          ],
         ),
       ),
       floatingActionButton: FloatingActionButton(
