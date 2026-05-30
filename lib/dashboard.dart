@@ -86,6 +86,22 @@ class _DashboardState extends State<Dashboard> {
     setState(() {});
   }
 
+  void deleteItem(id) async {
+    print('Deleting: $deletetodo$id'); // lägg till
+
+    var response = await http.delete(
+      Uri.parse('$deletetodo$id'),
+      headers: {"Content-Type": "application/json"},
+    );
+    print(response.statusCode);
+    print(response.body);
+
+    var jsonResponse = jsonDecode(response.body);
+    if (jsonResponse['status']) {
+      getTodoList(userId);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -136,7 +152,9 @@ class _DashboardState extends State<Dashboard> {
                               endActionPane: ActionPane(
                                 motion: const ScrollMotion(),
                                 dismissible: DismissiblePane(
-                                  onDismissed: () {},
+                                  onDismissed: () {
+                                    deleteItem('${items![index]['_id']}');
+                                  },
                                 ),
                                 children: [
                                   SlidableAction(
