@@ -60,12 +60,40 @@ class _DashboardState extends State<Dashboard> {
       print(jsonResponse['status']);
 
       if (jsonResponse['status']) {
-        _todoTitle.clear();
-        _todoDescription.clear();
+        // _todoTitle.clear();
+        // _todoDescription.clear();
         Navigator.pop(context);
         getTodoList(userId);
       } else {
         print('not created');
+      }
+    }
+  }
+
+  void updateTodo(id) async {
+    if (_todoTitle.text.isNotEmpty && _todoDescription.text.isNotEmpty) {
+      var reqBody = {
+        "title": _todoTitle.text,
+        "description": _todoDescription.text,
+      };
+
+      var response = await http.put(
+        Uri.parse('$updatetodo$id'),
+        headers: {"Content-Type": "application/json"},
+        body: jsonEncode(reqBody),
+      );
+
+      var jsonResponse = jsonDecode(response.body);
+
+      print(jsonResponse['status']);
+
+      if (jsonResponse['status']) {
+        // _todoTitle.clear();
+        // _todoDescription.clear();
+        Navigator.pop(context);
+        getTodoList(userId);
+      } else {
+        print('not updated');
       }
     }
   }
@@ -173,6 +201,10 @@ class _DashboardState extends State<Dashboard> {
                                 borderOnForeground: false,
                                 color: _bgLight,
                                 child: ListTile(
+                                  onTap: () => _displayTextInputDialog(
+                                    context,
+                                    item: items![index],
+                                  ),
                                   leading: Icon(Icons.task),
                                   title: Text('${items![index]['title']}'),
                                   subtitle: Text(
@@ -201,7 +233,18 @@ class _DashboardState extends State<Dashboard> {
     );
   }
 
-  Future<void> _displayTextInputDialog(BuildContext context) async {
+  Future<void> _displayTextInputDialog(
+    BuildContext context, {
+    dynamic item,
+  }) async {
+    bool isEditing = item != null;
+    if (isEditing) {
+      _todoTitle.text = item['title'];
+      _todoDescription.text = item['description'];
+    } else {
+      _todoTitle.clear();
+      _todoDescription.clear();
+    }
     return showDialog(
       context: context,
       builder: (context) {
@@ -227,7 +270,7 @@ class _DashboardState extends State<Dashboard> {
                       children: [
                         SizedBox(height: 20),
                         CustomTextFieldLabel(
-                          text: "Add Todo",
+                          text: isEditing ? "Edit Todo" : "Add Todo",
                           bodyColor: _darkTextColor,
                           fontSize: 16,
                         ),
@@ -258,9 +301,9 @@ class _DashboardState extends State<Dashboard> {
 
                         CustomButton(
                           btnColor: _darkTextColor,
-                          buttonText: "Save",
+                          buttonText: isEditing ? "Update" : "Save",
                           onPressedButton: () {
-                            addTodo();
+                            isEditing ? updateTodo(item['_id']) : addTodo();
                           },
                         ),
                         SizedBox(height: 12),
