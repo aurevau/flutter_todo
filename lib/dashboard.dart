@@ -21,6 +21,7 @@ class Dashboard extends StatefulWidget {
 
 class _DashboardState extends State<Dashboard> {
   String userId = '';
+  String username = '';
   TextEditingController _todoTitle = TextEditingController();
   TextEditingController _todoDescription = TextEditingController();
 
@@ -37,7 +38,9 @@ class _DashboardState extends State<Dashboard> {
     super.initState();
     Map<String, dynamic> jwtDecoderToken = JwtDecoder.decode(widget.token);
     userId = (jwtDecoderToken['_id'] as String?) ?? '';
-
+    String email = (jwtDecoderToken['email'] as String?) ?? '';
+    username = email.split('@').first;
+    username = username[0].toUpperCase() + username.substring(1);
     getTodoList(userId);
   }
 
@@ -145,7 +148,7 @@ class _DashboardState extends State<Dashboard> {
               style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
             ),
             Text(
-              "${userId} // Username later",
+              "${username} ",
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.w600,
