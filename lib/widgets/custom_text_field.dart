@@ -11,6 +11,7 @@ class CustomTextField extends StatelessWidget {
   final Color bodyColor;
   final Color borderColor;
   final String? errorText;
+  final int maxLines;
   final TextEditingController? controller;
 
   const CustomTextField({
@@ -26,6 +27,7 @@ class CustomTextField extends StatelessWidget {
     this.suffix,
     required this.primaryColor,
     this.errorText,
+    required this.maxLines,
   });
 
   @override
@@ -50,6 +52,7 @@ class CustomTextField extends StatelessWidget {
             ],
           ),
           child: TextField(
+            maxLines: maxLines,
             controller: controller,
             obscureText: isPassword && !isPasswordVisible,
             style: TextStyle(color: darkColor, fontWeight: FontWeight.w600),

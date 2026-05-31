@@ -38,7 +38,11 @@ class CustomInputForm extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        CustomTextFieldLabel(text: primaryInput, bodyColor: bodyColor),
+        CustomTextFieldLabel(
+          text: primaryInput,
+          bodyColor: bodyColor,
+          fontSize: 12,
+        ),
         CustomTextField(
           bodyColor: bodyColor,
           borderColor: borderColor,
@@ -48,9 +52,14 @@ class CustomInputForm extends StatelessWidget {
           primaryColor: primaryColor,
           controller: primaryController,
           errorText: primaryError,
+          maxLines: 1,
         ),
         const SizedBox(height: 24),
-        CustomTextFieldLabel(text: secondaryInput, bodyColor: bodyColor),
+        CustomTextFieldLabel(
+          text: secondaryInput,
+          bodyColor: bodyColor,
+          fontSize: 12,
+        ),
         CustomTextField(
           bodyColor: bodyColor,
           borderColor: borderColor,
@@ -72,6 +81,7 @@ class CustomInputForm extends StatelessWidget {
           ),
           controller: secondaryController,
           errorText: secondaryError,
+          maxLines: 1,
         ),
       ],
     );

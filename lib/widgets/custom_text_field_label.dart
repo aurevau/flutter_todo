@@ -3,11 +3,13 @@ import 'package:flutter/material.dart';
 class CustomTextFieldLabel extends StatelessWidget {
   final String text;
   final Color bodyColor;
+  final double fontSize;
 
   const CustomTextFieldLabel({
     super.key,
     required this.text,
     required this.bodyColor,
+    required this.fontSize,
   });
 
   @override
@@ -17,7 +19,7 @@ class CustomTextFieldLabel extends StatelessWidget {
       child: Text(
         text,
         style: TextStyle(
-          fontSize: 12,
+          fontSize: fontSize,
           fontWeight: FontWeight.w700,
           color: bodyColor.withOpacity(0.8),
           letterSpacing: 1.2,
